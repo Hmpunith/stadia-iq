@@ -8,6 +8,7 @@ import AdminPortal from './components/AdminPortal.jsx';
 export default function App() {
   const [activeRole, setActiveRole] = useState('fan');
   const [recommendedRoute, setRecommendedRoute] = useState(null);
+  const [theme, setTheme] = useState('dark');
   const [telemetry, setTelemetry] = useState({
     attendance: 54320,
     averageQueueTimeMins: 8.5,
@@ -20,6 +21,14 @@ export default function App() {
       'Gate D': 55,
     },
   });
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  useEffect(() => {
+    document.body.className = theme === 'light' ? 'light-theme' : '';
+  }, [theme]);
 
   // Fetch telemetry state from backend
   const fetchTelemetry = async () => {
@@ -48,7 +57,7 @@ export default function App() {
         Skip to main content
       </a>
 
-      <Header activeRole={activeRole} setActiveRole={setActiveRole} />
+      <Header activeRole={activeRole} setActiveRole={setActiveRole} theme={theme} toggleTheme={toggleTheme} />
 
       <main id="main-content" className="container" style={{ paddingBottom: '48px', paddingTop: '16px' }}>
         {/* Portal-specific layout structure */}

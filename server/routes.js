@@ -10,7 +10,7 @@ import express from 'express';
 import { genAI, writeCloudLog, insertAnalytics, reportError } from './googleServices.js';
 import { WayfindingSchema, IncidentSchema, DecisionSchema } from './schemas.js';
 import { WAYFINDER_INSTRUCTION, CHAT_INSTRUCTION, INCIDENT_INSTRUCTION, DECISION_INSTRUCTION } from './prompts.js';
-import { ValidationError, AIServiceError } from './errors.js';
+import { ValidationError, AIServiceError, NotFoundError } from './errors.js';
 import { generateCacheKey, getCached, setCache } from './cache.js';
 import { logger } from './logger.js';
 import config from './config.js';

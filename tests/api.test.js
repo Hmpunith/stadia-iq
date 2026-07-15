@@ -59,7 +59,6 @@ vi.mock('../server/logger.js', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-// Set configuration variables for testing
 process.env.GEMINI_API_KEY = 'mock-key';
 
 let app;
@@ -77,7 +76,6 @@ beforeEach(() => {
 // API Endpoint Tests
 // =====================================================================
 describe('StadiaIQ API Endpoints', () => {
-  // Health Check
   describe('GET /api/health', () => {
     it('returns 200 with status healthy', async () => {
       const res = await request(app).get('/api/health');
@@ -87,7 +85,6 @@ describe('StadiaIQ API Endpoints', () => {
     });
   });
 
-  // Telemetry Endpoints
   describe('Telemetry Endpoints', () => {
     it('GET /api/telemetry returns stadium metrics', async () => {
       const res = await request(app).get('/api/telemetry');
@@ -104,14 +101,27 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.body.attendance).toBe(65000);
       expect(res.body.averageQueueTimeMins).toBe(12.5);
     });
+
+    it('POST /api/telemetry returns 400 when body is invalid', async () => {
+      const res = await request(app)
+        .post('/api/telemetry')
+        .set('Content-Type', 'application/json')
+        .send('not-an-object');
+      expect(res.status).toBe(400);
+    });
   });
 
-  // Incidents Endpoints
   describe('Incident Tickets Endpoints', () => {
     it('GET /api/incidents lists all incidents', async () => {
       const res = await request(app).get('/api/incidents');
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(1);
+    });
+
+    it('GET /api/incidents returns arrays starting with seeded inc-1', async () => {
+      const res = await request(app).get('/api/incidents');
+      expect(res.body[0].id).toBe('inc-1');
+      expect(res.body[0].location).toBe('Gate B');
     });
 
     it('POST /api/incidents logs structured incident successfully', async () => {
@@ -123,6 +133,13 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.body.status).toBe('OPEN');
     });
 
+    it('POST /api/incidents returns 400 when missing parameters', async () => {
+      const res = await request(app)
+        .post('/api/incidents')
+        .send({ title: 'Leak' }); // missing location & category
+      expect(res.status).toBe(400);
+    });
+
     it('PUT /api/incidents/:id updates incident status', async () => {
       const res = await request(app)
         .put('/api/incidents/inc-1')
@@ -130,14 +147,26 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('CLOSED');
     });
+
+    it('PUT /api/incidents/:id returns 404 for missing incident', async () => {
+      const res = await request(app)
+        .put('/api/incidents/inc-missing')
+        .send({ status: 'CLOSED' });
+      expect(res.status).toBe(404);
+    });
   });
 
-  // Task Queue Endpoints
   describe('Tasks Management Endpoints', () => {
     it('GET /api/tasks lists all tasks', async () => {
       const res = await request(app).get('/api/tasks');
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(1);
+    });
+
+    it('GET /api/tasks returns seeded task-1 first', async () => {
+      const res = await request(app).get('/api/tasks');
+      expect(res.body[0].id).toBe('task-1');
+      expect(res.body[0].assignedTo).toBe('John Doe');
     });
 
     it('PUT /api/tasks/:id updates task status', async () => {
@@ -147,9 +176,15 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('COMPLETED');
     });
+
+    it('PUT /api/tasks/:id returns 404 for missing task', async () => {
+      const res = await request(app)
+        .put('/api/tasks/task-missing')
+        .send({ status: 'COMPLETED' });
+      expect(res.status).toBe(404);
+    });
   });
 
-  // Sustainability Hub Endpoints
   describe('Sustainability / EcoGoal Endpoints', () => {
     it('GET /api/sustainability lists statistics', async () => {
       const res = await request(app).get('/api/sustainability');
@@ -165,9 +200,22 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.body.action.points).toBe(10);
       expect(res.body.userPoints).toBe(10);
     });
+
+    it('POST /api/sustainability returns 400 for invalid actionId', async () => {
+      const res = await request(app)
+        .post('/api/sustainability')
+        .send({ username: 'Fan-X', actionId: 'invalid_action' });
+      expect(res.status).toBe(400);
+    });
+
+    it('POST /api/sustainability returns 400 for missing fields', async () => {
+      const res = await request(app)
+        .post('/api/sustainability')
+        .send({ username: 'Fan-X' }); // missing actionId
+      expect(res.status).toBe(400);
+    });
   });
 
-  // Gemini AI Endpoints (Mocked)
   describe('Gemini AI Smart Endpoints', () => {
     it('POST /api/wayfind generates congestion-aware routes via Gemini', async () => {
       mockGenerateContent.mockResolvedValueOnce({
@@ -183,6 +231,13 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.body.totalDurationMins).toBe(5.5);
     });
 
+    it('POST /api/wayfind returns 400 for missing nodes parameters', async () => {
+      const res = await request(app)
+        .post('/api/wayfind')
+        .send({ startNode: 'Lot P1' }); // missing endNode
+      expect(res.status).toBe(400);
+    });
+
     it('POST /api/chat provides copilot chat answers via Gemini', async () => {
       const res = await request(app)
         .post('/api/chat')
@@ -190,6 +245,20 @@ describe('StadiaIQ API Endpoints', () => {
 
       expect(res.status).toBe(200);
       expect(res.body.response).toBe(mockChatResponse);
+    });
+
+    it('POST /api/chat returns 400 for missing message parameter', async () => {
+      const res = await request(app)
+        .post('/api/chat')
+        .send({});
+      expect(res.status).toBe(400);
+    });
+
+    it('POST /api/chat returns 400 when message is an array', async () => {
+      const res = await request(app)
+        .post('/api/chat')
+        .send({ message: ['bag policy?'] });
+      expect(res.status).toBe(400);
     });
 
     it('POST /api/log-incident-raw ingests multilingual reports into DB via Gemini', async () => {
@@ -204,6 +273,13 @@ describe('StadiaIQ API Endpoints', () => {
       expect(res.status).toBe(201);
       expect(res.body.title).toBe('Cola Spill Section 104');
       expect(res.body.severity).toBe('MEDIUM');
+    });
+
+    it('POST /api/log-incident-raw returns 400 for missing parameters', async () => {
+      const res = await request(app)
+        .post('/api/log-incident-raw')
+        .send({ text: 'Broken chair' }); // missing location
+      expect(res.status).toBe(400);
     });
 
     it('POST /api/decision generates operational decisions via Gemini', async () => {

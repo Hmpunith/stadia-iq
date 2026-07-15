@@ -23,6 +23,7 @@ export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh
   const [ecoStats, setEcoStats] = useState({ userPoints: 80, userCo2SavedKg: 3.5, globalPoints: 2450, globalCo2SavedKg: 154.6 });
   const [ecoLoading, setEcoLoading] = useState(false);
   const [ecoSuccessMessage, setEcoSuccessMessage] = useState(null);
+  const [srAnnouncer, setSrAnnouncer] = useState('');
 
   // Scroll to bottom of chat
   useEffect(() => {
@@ -65,6 +66,7 @@ export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh
       }
       setWayfindResult(data);
       setRoute(data.recommendedRoute);
+      setSrAnnouncer(`Route calculated. Total duration: ${data.totalDurationMins} minutes. Recommended route is: ${data.recommendedRoute.join(' to ')}.`);
     } catch (err) {
       setWayfindError(err.message);
     } finally {
@@ -138,6 +140,23 @@ export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh
 
   return (
     <div className="portal-grid">
+      {/* Hidden Live Announcer for Screen Readers */}
+      <div
+        className="sr-only"
+        aria-live="polite"
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          border: 0,
+        }}
+      >
+        {srAnnouncer}
+      </div>
       {/* Left Column: Routing & EcoGoals */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Route Optimization */}

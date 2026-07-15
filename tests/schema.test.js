@@ -31,6 +31,44 @@ describe('WayfindingSchema', () => {
     const result = WayfindingSchema.safeParse(data);
     expect(result.success).toBe(false);
   });
+
+  it('accepts data with an active text alert', () => {
+    const data = { ...validWayfinding, alert: 'High congestion warning!' };
+    const result = WayfindingSchema.safeParse(data);
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects when navigationSteps is not an array', () => {
+    const data = { ...validWayfinding, navigationSteps: 'just walk there' };
+    const result = WayfindingSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects when step is missing instruction', () => {
+    const data = {
+      ...validWayfinding,
+      navigationSteps: [{ distanceMeters: 10, estimatedSeconds: 5 }],
+    };
+    const result = WayfindingSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects negative distance values in steps', () => {
+    // Note: Zod number checks don't strictly assert positive unless .positive() is appended.
+    // However, we check if it validates numbers strictly.
+    const data = {
+      ...validWayfinding,
+      navigationSteps: [{ instruction: 'Walk', distanceMeters: 'ten', estimatedSeconds: 100 }],
+    };
+    const result = WayfindingSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects non-numeric duration values', () => {
+    const data = { ...validWayfinding, totalDurationMins: 'five minutes' };
+    const result = WayfindingSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
 });
 
 // =====================================================================
@@ -61,6 +99,30 @@ describe('IncidentSchema', () => {
     const result = IncidentSchema.safeParse(data);
     expect(result.success).toBe(false);
   });
+
+  it('rejects data missing resolutionChecklist', () => {
+    const { resolutionChecklist, ...dataWithout } = validIncident;
+    const result = IncidentSchema.safeParse(dataWithout);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects empty resolutionChecklist items type', () => {
+    const data = { ...validIncident, resolutionChecklist: [12345] };
+    const result = IncidentSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts CRITICAL severity values', () => {
+    const data = { ...validIncident, severity: 'CRITICAL' };
+    const result = IncidentSchema.safeParse(data);
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts LOW severity values', () => {
+    const data = { ...validIncident, severity: 'LOW' };
+    const result = IncidentSchema.safeParse(data);
+    expect(result.success).toBe(true);
+  });
 });
 
 // =====================================================================
@@ -87,6 +149,33 @@ describe('DecisionSchema', () => {
     const data = {
       ...validDecision,
       announcementDraft: { en: 'Please proceed to Gate A.' }, // missing es
+    };
+    const result = DecisionSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts null staffDispatchLocation', () => {
+    const data = { ...validDecision, staffDispatchLocation: null };
+    const result = DecisionSchema.safeParse(data);
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects data missing urgencyLevel', () => {
+    const { urgencyLevel, ...dataWithout } = validDecision;
+    const result = DecisionSchema.safeParse(dataWithout);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects non-string actionPlan items', () => {
+    const data = { ...validDecision, actionPlan: [123, 'Action Item 2'] };
+    const result = DecisionSchema.safeParse(data);
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects non-string announcementDraft en values', () => {
+    const data = {
+      ...validDecision,
+      announcementDraft: { en: 100, es: 'Espanol' },
     };
     const result = DecisionSchema.safeParse(data);
     expect(result.success).toBe(false);

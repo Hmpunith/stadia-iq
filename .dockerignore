@@ -1,0 +1,12 @@
+node_modules
+tests
+.git
+.env
+.env.example
+coverage
+*.md
+.editorconfig
+.prettierrc
+eslint.config.js
+jsconfig.json
+vitest.config.js

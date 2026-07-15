@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function Header({ activeRole, setActiveRole }) {
+export default function Header({ activeRole, setActiveRole, theme, toggleTheme }) {
   return (
     <header className="site-header" role="banner">
-      <div className="container header-content">
+      <div className="container header-content" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
         <div className="logo-container">
           <div className="logo-icon" aria-hidden="true">
             IQ
@@ -17,9 +17,9 @@ export default function Header({ activeRole, setActiveRole }) {
           </div>
         </div>
 
-        <div className="role-selector-container">
-          <span id="role-select-label" className="form-label" style={{ display: 'inline-block', marginRight: '12px', fontSize: '0.8rem', verticalAlign: 'middle', color: 'var(--color-text-muted)', marginBottom: 0 }}>
-            SELECT VIEW:
+        <div className="role-selector-container" style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: 'auto' }}>
+          <span id="role-select-label" className="form-label" style={{ display: 'inline-block', marginRight: '4px', fontSize: '0.8rem', verticalAlign: 'middle', color: 'var(--color-text-muted)', marginBottom: 0 }}>
+            VIEW:
           </span>
           <div className="role-selector" role="radiogroup" aria-labelledby="role-select-label">
             <button
@@ -28,7 +28,7 @@ export default function Header({ activeRole, setActiveRole }) {
               aria-checked={activeRole === 'fan'}
               onClick={() => setActiveRole('fan')}
             >
-              Fan Companion
+              Fan
             </button>
             <button
               className={`role-btn ${activeRole === 'staff' ? 'active staff' : ''}`}
@@ -36,7 +36,7 @@ export default function Header({ activeRole, setActiveRole }) {
               aria-checked={activeRole === 'staff'}
               onClick={() => setActiveRole('staff')}
             >
-              Volunteer Portal
+              Volunteer
             </button>
             <button
               className={`role-btn ${activeRole === 'organizer' ? 'active organizer' : ''}`}
@@ -44,9 +44,18 @@ export default function Header({ activeRole, setActiveRole }) {
               aria-checked={activeRole === 'organizer'}
               onClick={() => setActiveRole('organizer')}
             >
-              Organizer Cockpit
+              Organizer
             </button>
           </div>
+
+          <button
+            onClick={toggleTheme}
+            className="btn btn-secondary"
+            style={{ padding: '8px 12px', borderRadius: '10px', fontSize: '0.8rem', border: '1px solid var(--color-border)', cursor: 'pointer' }}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+          </button>
         </div>
       </div>
     </header>
@@ -56,4 +65,6 @@ export default function Header({ activeRole, setActiveRole }) {
 Header.propTypes = {
   activeRole: PropTypes.string.isRequired,
   setActiveRole: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
+  toggleTheme: PropTypes.func.isRequired,
 };
