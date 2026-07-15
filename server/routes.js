@@ -246,11 +246,17 @@ router.post('/chat', async (req, res, next) => {
       },
     });
 
+    const mappedHistory = chatHistory.map((msg) => ({
+      role: msg.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: msg.content }],
+    }));
+
+    // Gemini requires the chat history to start with a 'user' message
+    const firstUserIdx = mappedHistory.findIndex((msg) => msg.role === 'user');
+    const historyPayload = firstUserIdx !== -1 ? mappedHistory.slice(firstUserIdx) : [];
+
     const chatSession = model.startChat({
-      history: chatHistory.map((msg) => ({
-        role: msg.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      })),
+      history: historyPayload,
     });
 
     const result = await chatSession.sendMessage(message);
