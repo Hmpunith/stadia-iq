@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { MAP_NODES, ECO_ACTIONS_LIST } from '../constants.js';
 
-export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh }) {
+export default function FanPortal({ setRoute, triggerTelemetryRefresh }) {
   // Wayfinding State
   const [startNode, setStartNode] = useState('Lot P1');
   const [endNode, setEndNode] = useState('Section 100s');
@@ -128,7 +128,7 @@ export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh
       triggerTelemetryRefresh();
       setTimeout(() => setEcoSuccessMessage(null), 4000);
     } catch (err) {
-      alert(err.message);
+      window.alert(err.message);
     } finally {
       setEcoLoading(false);
     }
@@ -366,12 +366,5 @@ export default function FanPortal({ setRoute, telemetry, triggerTelemetryRefresh
 
 FanPortal.propTypes = {
   setRoute: PropTypes.func.isRequired,
-  telemetry: PropTypes.shape({
-    attendance: PropTypes.number,
-    averageQueueTimeMins: PropTypes.number,
-    activeIncidentsCount: PropTypes.number,
-    transitDelayStatus: PropTypes.string,
-    crowdHeatmap: PropTypes.objectOf(PropTypes.number),
-  }),
   triggerTelemetryRefresh: PropTypes.func.isRequired,
 };

@@ -4,7 +4,9 @@
 
 [![Built with Google Cloud](https://img.shields.io/badge/Built%20with-Google%20Cloud-4285F4?logo=google-cloud)](https://cloud.google.com)
 [![Powered by Gemini](https://img.shields.io/badge/Powered%20by-Gemini%20AI-8E75B2?logo=google)](https://ai.google.dev)
-[![Tests](https://img.shields.io/badge/Tests-Passed-10B981)]()
+[![CI](https://github.com/Hmpunith/stadia-iq/actions/workflows/ci.yml/badge.svg)](https://github.com/Hmpunith/stadia-iq/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/Hmpunith/stadia-iq/actions/workflows/codeql.yml/badge.svg)](https://github.com/Hmpunith/stadia-iq/actions/workflows/codeql.yml)
+[![Tests](https://img.shields.io/badge/Tests-69%20Passed-10B981)]()
 [![WCAG AA](https://img.shields.io/badge/Accessibility-WCAG%20AA-059669)]()
 
 StadiaIQ is a GenAI-enabled stadium operations and fan experience platform designed for the FIFA World Cup 2026. It features role-switching modules for **Fans**, **Venue Staff/Volunteers**, and **Tournament Organizers**, showcasing how Generative AI can improve navigation, crowd density management, multi-lingual reporting, accessibility, sustainability, and real-time operational decision support.
@@ -20,6 +22,13 @@ StadiaIQ is a GenAI-enabled stadium operations and fan experience platform desig
 | **Sustainability** | 🌿 EcoGoal Matchday Tracker | `FanPortal.jsx` & `/api/sustainability` — enables fans to log ecological actions (e.g. taking public rail, cup recycling) to earn rewards and compute carbon offsets. |
 | **Operational Intelligence** | 🚨 AI Incident Intake Console | `StaffPortal.jsx` & `/api/log-incident-raw` — volunteers write or voice-log incidents in any language. Gemini translates, categorizes, gauges severity, and creates task checklists instantly. |
 | **Real-time Decision Support** | 🤖 Strategic Command Cockpit | `AdminPortal.jsx` & `/api/decision` — tournament directors analyze overall stadium telemetry and active incident lists to generate tactical mitigation plans and loudspeaker broadcasts. |
+
+## 🧠 Approach and Logic
+
+1. **Strict Model Grounding**: All Gemini prompts are anchored on explicit MetLife Stadium parameters (valid parking lots, gates, sections, and facilities). The AI engines are instructed to fail-safe rather than invent nonexistent gates or path connections.
+2. **Deterministic-LLM Separation**: Crowd congestion thresholds, carbon saving calculations, and incident task dispatch queues are managed by typed, unit-tested JS code. Gemini is used only to interpret complex natural patterns (translating raw transcripts, summarizing scenarios, and suggesting creative loudspeaker transcripts).
+3. **Robust Sanitization**: Every API endpoint uses Zod schema validation to verify boundary inputs and filters outputs, converting database/network glitches into operational response wraps.
+4. **Accessible Announcers**: The UI uses custom `aria-live` regions to voice routes and alerts, offering a dark/light theme switch for visual clarity.
 
 ---
 

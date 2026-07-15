@@ -14,14 +14,14 @@ import { logger } from './logger.js';
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
 
 /**
- * Generates an MD5 hashed cache key with a prefix.
+ * Generates a SHA-256 hashed cache key with a prefix.
  *
  * @param {string} prefix - The namespace prefix for the cache
  * @param {string} input - The raw query string
  * @returns {string} The formatted cache key
  */
 export function generateCacheKey(prefix, input) {
-  const hash = crypto.createHash('md5').update(input).digest('hex');
+  const hash = crypto.createHash('sha256').update(input).digest('hex');
   return `${prefix}:${hash}`;
 }
 

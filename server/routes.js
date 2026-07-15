@@ -31,6 +31,28 @@ function validateApiKey() {
 }
 
 /**
+ * Helper to parse JSON string, attempting cleanup if initial parse fails.
+ *
+ * @param {string} text - Raw JSON string
+ * @returns {object} Parsed JSON object
+ * @throws {Error} If cleanup and parsing both fail
+ */
+function parseAndCleanJson(text) {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    logger.warn({ error: err.message, rawText: text }, 'JSON parse failed, attempting cleanup');
+    try {
+      const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch (cleanupErr) {
+      logger.error({ error: cleanupErr.message, rawText: text }, 'JSON cleanup and parse failed');
+      throw cleanupErr;
+    }
+  }
+}
+
+/**
  * Calls Google Gemini with the given system instruction and user prompt.
  * Implements caching, JSON parsing, and Zod schema validation.
  *
@@ -70,19 +92,7 @@ async function callGemini(systemInstruction, userPrompt, schema, cachePrefix) {
       const response = await result.response;
       const text = response.text();
 
-      let parsed;
-      try {
-        parsed = JSON.parse(text);
-      } catch (err) {
-        logger.warn({ error: err.message, rawText: text }, 'JSON parse failed, attempting cleanup');
-        try {
-          const cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-          parsed = JSON.parse(cleaned);
-        } catch (cleanupErr) {
-          logger.error({ error: cleanupErr.message, rawText: text }, 'JSON cleanup and parse failed');
-          throw cleanupErr;
-        }
-      }
+      const parsed = parseAndCleanJson(text);
 
       const validated = schema.safeParse(parsed);
       if (!validated.success) {

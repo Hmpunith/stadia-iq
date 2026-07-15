@@ -29,14 +29,12 @@ export const genAI = new GoogleGenerativeAI(config.gemini.apiKey);
 
 // ── 2. Google Cloud Logging ────────────────────────────────────────────────
 
-/** @type {Logging} Google Cloud Logging client */
-let cloudLogging;
+/** @type {object} Google Cloud Logging logger instance */
 let cloudLog;
 try {
-  cloudLogging = new Logging();
+  const cloudLogging = new Logging();
   cloudLog = cloudLogging.log('stadia-iq-server');
 } catch {
-  cloudLogging = null;
   cloudLog = null;
 }
 

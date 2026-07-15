@@ -14,7 +14,6 @@ import { rateLimit } from 'express-rate-limit';
 import crypto from 'crypto';
 import xss from 'xss';
 import config from './config.js';
-import { HTTP } from './constants.js';
 
 /**
  * Configures Helmet security headers with a custom CSP

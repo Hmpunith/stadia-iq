@@ -68,7 +68,6 @@ export default function App() {
             </div>
             <FanPortal
               setRoute={setRecommendedRoute}
-              telemetry={telemetry}
               triggerTelemetryRefresh={fetchTelemetry}
             />
           </div>

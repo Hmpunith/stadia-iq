@@ -11,6 +11,16 @@ export default function AdminPortal({ telemetry, triggerTelemetryRefresh }) {
   const [plannerResult, setPlannerResult] = useState(null);
   const [plannerError, setPlannerError] = useState(null);
 
+  const getIncidentColor = (status, severity) => {
+    if (status === 'CLOSED') {
+      return 'var(--color-text-muted)';
+    }
+    if (severity === 'CRITICAL' || severity === 'HIGH') {
+      return 'var(--color-danger)';
+    }
+    return 'var(--color-warning)';
+  };
+
   // Fetch all incidents
   const fetchIncidents = async () => {
     setLoadingIncidents(true);
@@ -164,7 +174,7 @@ export default function AdminPortal({ telemetry, triggerTelemetryRefresh }) {
           <p style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
             NJ Transit Departures
           </p>
-          <p style={{ fontSize: '1.8rem', fontWeight: 800, marginTop: '4px', color: '#fff', textTransform: 'uppercase', fontSize: '1.4rem', lineHeight: '2.2rem' }}>
+          <p style={{ fontWeight: 800, marginTop: '4px', color: '#fff', textTransform: 'uppercase', fontSize: '1.4rem', lineHeight: '2.2rem' }}>
             {telemetry.transitDelayStatus}
           </p>
           <span style={{ fontSize: '0.7rem', color: telemetry.transitDelayStatus.includes('DELAY') ? 'var(--color-danger)' : 'var(--color-success)' }}>
@@ -308,7 +318,7 @@ export default function AdminPortal({ telemetry, triggerTelemetryRefresh }) {
                     style={{
                       background: inc.status === 'CLOSED' ? 'rgba(255,255,255,0.01)' : 'rgba(255, 255, 255, 0.02)',
                       border: '1px solid var(--color-border)',
-                      borderLeft: `4px solid ${inc.status === 'CLOSED' ? 'var(--color-text-muted)' : inc.severity === 'CRITICAL' || inc.severity === 'HIGH' ? 'var(--color-danger)' : 'var(--color-warning)'}`,
+                      borderLeft: `4px solid ${getIncidentColor(inc.status, inc.severity)}`,
                       borderRadius: '8px',
                       padding: '12px 16px',
                       opacity: inc.status === 'CLOSED' ? 0.6 : 1,
