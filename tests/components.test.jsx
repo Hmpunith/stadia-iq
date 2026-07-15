@@ -104,13 +104,18 @@ describe('WayfinderMap SVG Rendering', () => {
 });
 
 describe('FanPortal Core Interactions', () => {
-  it('allows changing origin and target nodes', () => {
-    render(<FanPortal setRoute={() => {}} telemetry={{}} triggerTelemetryRefresh={() => {}} />);
+  it('allows changing origin and target nodes', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue([]) });
+    await act(async () => {
+      render(<FanPortal setRoute={() => {}} telemetry={{}} triggerTelemetryRefresh={() => {}} />);
+    });
     const startSelect = screen.getByLabelText(/matchday origin/i);
     const endSelect = screen.getByLabelText(/target destination/i);
 
-    fireEvent.change(startSelect, { target: { value: 'Lot P3' } });
-    fireEvent.change(endSelect, { target: { value: 'Gate B' } });
+    await act(async () => {
+      fireEvent.change(startSelect, { target: { value: 'Lot P3' } });
+      fireEvent.change(endSelect, { target: { value: 'Gate B' } });
+    });
 
     expect(startSelect.value).toBe('Lot P3');
     expect(endSelect.value).toBe('Gate B');
@@ -129,7 +134,9 @@ describe('FanPortal Core Interactions', () => {
     });
     globalThis.fetch = mockFetch;
 
-    render(<FanPortal setRoute={setRoute} telemetry={{}} triggerTelemetryRefresh={() => {}} />);
+    await act(async () => {
+      render(<FanPortal setRoute={setRoute} telemetry={{}} triggerTelemetryRefresh={() => {}} />);
+    });
     const submitBtn = screen.getByRole('button', { name: /find smart route/i });
 
     await act(async () => {
@@ -141,11 +148,16 @@ describe('FanPortal Core Interactions', () => {
 });
 
 describe('StaffPortal Core Interactions', () => {
-  it('allows filling in raw incident text reports', () => {
-    render(<StaffPortal triggerTelemetryRefresh={() => {}} />);
+  it('allows filling in raw incident text reports', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue([]) });
+    await act(async () => {
+      render(<StaffPortal triggerTelemetryRefresh={() => {}} />);
+    });
     const textarea = screen.getByLabelText(/raw log\/transcript/i);
 
-    fireEvent.change(textarea, { target: { value: 'Water leak section 104' } });
+    await act(async () => {
+      fireEvent.change(textarea, { target: { value: 'Water leak section 104' } });
+    });
     expect(textarea.value).toBe('Water leak section 104');
   });
 });
