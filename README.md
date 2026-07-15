@@ -32,6 +32,32 @@ StadiaIQ is a GenAI-enabled stadium operations and fan experience platform desig
 
 ---
 
+## 💡 How the Solution Works
+
+StadiaIQ delivers its capabilities through a tightly integrated pipeline that connects a React single-page application to an Express API server backed by Google Gemini.
+
+1. **Fan Navigation — Wayfinder Map.** A fan opens the React SPA served by the Express backend on Cloud Run. The Wayfinder Map renders an interactive SVG representation of MetLife Stadium with parking lots, gates, sections, and facilities as clickable nodes. When a fan requests a route via `POST /api/wayfind`, the server builds a congestion-aware prompt using live telemetry heatmap data, sends it to Gemini 2.5 Flash with structured JSON output, validates the response against a Zod schema (`WayfindingSchema`), and returns optimized navigation steps. The SVG map then animates the recommended path with directional arrows and color-coded congestion overlays.
+
+2. **Matchday Copilot Chat.** The Matchday Copilot chat uses Gemini's multi-turn conversation API (`startChat`) with sanitized history, grounded on MetLife Stadium policies including bag rules, transit schedules, and accessible routes. Fans can ask questions in any supported language and receive contextual, policy-accurate responses.
+
+3. **Staff Incident Reporting.** Volunteers use the Staff Portal to voice-log or type incident reports in any language. Gemini translates the raw input into English, classifies the incident severity on a standardized scale, and generates actionable resolution checklists that staff can follow immediately.
+
+4. **Admin Strategic Command.** Tournament directors use the Admin Portal to view live telemetry dashboards and generate AI-powered strategic briefings. These briefings include staff dispatch recommendations, risk assessments based on crowd density trends, and multilingual loudspeaker announcements ready for broadcast.
+
+5. **Performance Guardrails.** All API responses are cached with SHA-256 keyed TTL caching to minimize redundant Gemini calls. The system automatically falls back from `gemini-2.5-flash` to `gemini-1.5-flash` on 429/503 errors, ensuring continuous availability even under free-tier API constraints.
+
+---
+
+## 📋 Assumptions Made
+
+- **Venue data is curated in code.** MetLife Stadium's parking lots, gates, sections, facilities, and transit options are defined as constants in the client and prompt instructions. A production deployment would source these from a venue CMS or GIS database.
+- **Telemetry is simulated.** No live IoT or turnstile feed exists, so a deterministic telemetry simulator provides realistic crowd density, queue times, and transit delay values. The read/write paths are identical to what a production IoT integration would use.
+- **Anonymous access model.** Both fan and staff surfaces are anonymous and read-only toward venue systems. No authentication is required for the prototype; production would add Firebase Auth or staff SSO behind the operations portal.
+- **Single venue, multiple languages.** The scope covers one stadium (MetLife, NY/NJ) and supports the tournament's highest-traffic languages. Both venue and language data extend without code changes to routes or prompts.
+- **Free-tier API constraints.** Gemini API calls use free-tier quotas with automatic fallback from `gemini-2.5-flash` to `gemini-1.5-flash` on 429/503 errors, plus SHA-256 TTL caching to minimize repeated calls.
+
+---
+
 ## 🏗️ Architecture
 
 ```mermaid
@@ -121,5 +147,6 @@ npm test
 
 ---
 
-## 📜 License
-MIT License.
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
