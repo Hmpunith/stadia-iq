@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Fan-facing portal with wayfinding route requests,
+ * EcoGoal sustainability tracker, and Matchday Copilot chat.
+ *
+ * @module FanPortal
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { MAP_NODES, ECO_ACTIONS_LIST } from '../constants.js';

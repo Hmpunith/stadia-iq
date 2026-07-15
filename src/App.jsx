@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Root application component for StadiaIQ.
+ * Manages role-based portal switching, theme state, telemetry polling,
+ * and layout orchestration for Fan, Staff, and Admin views.
+ *
+ * @module App
+ */
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header.jsx';
 import WayfinderMap from './components/WayfinderMap.jsx';

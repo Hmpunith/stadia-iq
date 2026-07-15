@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Volunteer/staff portal for incident reporting and task management.
+ * Supports multilingual voice-to-text incident intake with AI-powered
+ * translation, classification, and resolution checklist generation.
+ *
+ * @module StaffPortal
+ */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 

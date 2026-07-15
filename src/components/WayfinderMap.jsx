@@ -1,3 +1,10 @@
+/**
+ * @fileoverview Interactive SVG wayfinder map for MetLife Stadium.
+ * Renders parking lots, gates, sections, and facilities as clickable nodes
+ * with congestion-aware heatmap coloring and animated route paths.
+ *
+ * @module WayfinderMap
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MAP_NODES, MAP_EDGES } from '../constants.js';

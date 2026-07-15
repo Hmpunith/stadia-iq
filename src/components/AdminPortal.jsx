@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Tournament organizer command center with live telemetry
+ * dashboards, incident feeds, and AI-powered strategic decision support.
+ *
+ * @module AdminPortal
+ */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 

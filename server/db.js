@@ -128,10 +128,19 @@ const db = {
 
 // Database operations
 
+/**
+ * Retrieve all incidents currently stored in the database.
+ * @returns {Array<Object>} Array of incident objects.
+ */
 export function getIncidents() {
   return db.incidents;
 }
 
+/**
+ * Create a new incident record with an auto-generated id, timestamp, and OPEN status.
+ * @param {Object} incident - The incident data to store.
+ * @returns {Object} The newly created incident object with generated id, timestamp, and status.
+ */
 export function addIncident(incident) {
   const newIncident = {
     id: `inc-${Date.now()}`,
@@ -144,6 +153,12 @@ export function addIncident(incident) {
   return newIncident;
 }
 
+/**
+ * Update an existing incident by id and refresh the active-incidents telemetry counter.
+ * @param {string} id - The unique identifier of the incident to update.
+ * @param {Object} updates - An object containing the fields to merge into the incident.
+ * @returns {Object|null} The updated incident object, or null if not found.
+ */
 export function updateIncident(id, updates) {
   const index = db.incidents.findIndex((inc) => inc.id === id);
   if (index !== -1) {
@@ -154,10 +169,19 @@ export function updateIncident(id, updates) {
   return null;
 }
 
+/**
+ * Retrieve all volunteer/staff tasks currently stored in the database.
+ * @returns {Array<Object>} Array of task objects.
+ */
 export function getTasks() {
   return db.tasks;
 }
 
+/**
+ * Create a new task record with an auto-generated id and PENDING status.
+ * @param {Object} task - The task data to store.
+ * @returns {Object} The newly created task object with generated id and default status.
+ */
 export function addTask(task) {
   const newTask = {
     id: `task-${Date.now()}`,
@@ -169,6 +193,14 @@ export function addTask(task) {
   return newTask;
 }
 
+/**
+ * Update an existing task by id. If the task is marked COMPLETED and all
+ * sibling tasks sharing the same incidentId are also COMPLETED, the parent
+ * incident is automatically closed.
+ * @param {string} id - The unique identifier of the task to update.
+ * @param {Object} updates - An object containing the fields to merge into the task.
+ * @returns {Object|null} The updated task object, or null if not found.
+ */
 export function updateTask(id, updates) {
   const index = db.tasks.findIndex((t) => t.id === id);
   if (index !== -1) {
@@ -187,10 +219,21 @@ export function updateTask(id, updates) {
   return null;
 }
 
+/**
+ * Retrieve the current sustainability state including global totals and per-user data.
+ * @returns {Object} The sustainability state object.
+ */
 export function getSustainability() {
   return db.sustainability;
 }
 
+/**
+ * Log an eco-friendly action for a fan, awarding points and CO₂ savings.
+ * Creates the user record if it does not already exist.
+ * @param {string} username - The unique username of the fan performing the action.
+ * @param {string} actionId - The identifier of the eco action (matched against ECO_ACTIONS).
+ * @returns {Object|null} An object with action details, user totals, and global totals, or null if actionId is invalid.
+ */
 export function logEcoAction(username, actionId) {
   const action = ECO_ACTIONS[actionId.toUpperCase()];
   if (!action) {
@@ -227,10 +270,19 @@ export function logEcoAction(username, actionId) {
   };
 }
 
+/**
+ * Retrieve the current live telemetry snapshot.
+ * @returns {Object} The telemetry state object.
+ */
 export function getTelemetry() {
   return db.telemetry;
 }
 
+/**
+ * Merge partial updates into the telemetry state.
+ * @param {Object} updates - An object containing the telemetry fields to update.
+ * @returns {Object} The merged telemetry state object.
+ */
 export function updateTelemetry(updates) {
   db.telemetry = { ...db.telemetry, ...updates };
   return db.telemetry;

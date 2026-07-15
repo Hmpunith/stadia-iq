@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "checkJs": false,
+    "strictNullChecks": false,
+    "baseUrl": ".",
+    "paths": {
+      "@server/*": ["server/*"],
+      "@components/*": ["src/components/*"]
+    }
+  },
+  "include": ["src/**/*", "server/**/*", "server.js"],
+  "exclude": ["node_modules", "dist", "coverage"]
+}

@@ -1,8 +1,9 @@
 /**
- * @fileoverview Frontend constants and static map coordinates for wayfinding.
+ * @fileoverview Client-side constants for StadiaIQ.
+ * Defines SVG map node coordinates, edge connections, and eco-action options
+ * used by the Wayfinder Map and Fan Portal components.
  *
  * @module constants
- * @version 1.0.0
  */
 
 export const MAP_NODES = {

@@ -11,6 +11,14 @@
 
 StadiaIQ is a GenAI-enabled stadium operations and fan experience platform designed for the FIFA World Cup 2026. It features role-switching modules for **Fans**, **Venue Staff/Volunteers**, and **Tournament Organizers**, showcasing how Generative AI can improve navigation, crowd density management, multi-lingual reporting, accessibility, sustainability, and real-time operational decision support.
 
+## 🏆 Chosen Vertical
+
+**Smart Stadiums & Tournament Operations** — FIFA World Cup 2026 at MetLife Stadium (East Rutherford, NJ). The platform serves three distinct personas through a single unified interface:
+
+- **Fans** — multilingual matchday assistant for navigation, accessibility, transport, sustainability tracking, and venue questions.
+- **Volunteers / Venue Staff** — incident reporting console with AI-powered translation, severity classification, and task management.
+- **Tournament Organizers** — operations command center with live crowd intelligence, incident monitoring, and AI-generated strategic briefings.
+
 ---
 
 ## 🎯 Problem Statement Alignment
@@ -18,10 +26,13 @@ StadiaIQ is a GenAI-enabled stadium operations and fan experience platform desig
 | Challenge Requirement | StadiaIQ Feature | Implementation |
 |---|---|---|
 | **Wayfinding & Navigation** | 🗺️ Congestion-Aware Wayfinder | `WayfinderMap.jsx` & `/api/wayfind` — calculates optimal routes (SVG mapping) that dynamically avoid congested gates based on live crowd telemetry. |
-| **Multilingual Assistance** | 💬 Matchday Copilot | `FanPortal.jsx` & `/api/chat` — conversational chatbot that assists fans with World Cup schedules, transit departures, and clear bag policies in any major language. |
-| **Sustainability** | 🌿 EcoGoal Matchday Tracker | `FanPortal.jsx` & `/api/sustainability` — enables fans to log ecological actions (e.g. taking public rail, cup recycling) to earn rewards and compute carbon offsets. |
-| **Operational Intelligence** | 🚨 AI Incident Intake Console | `StaffPortal.jsx` & `/api/log-incident-raw` — volunteers write or voice-log incidents in any language. Gemini translates, categorizes, gauges severity, and creates task checklists instantly. |
-| **Real-time Decision Support** | 🤖 Strategic Command Cockpit | `AdminPortal.jsx` & `/api/decision` — tournament directors analyze overall stadium telemetry and active incident lists to generate tactical mitigation plans and loudspeaker broadcasts. |
+| **Crowd Management** | 📊 Live Crowd Density Dashboard | `AdminPortal.jsx` & `/api/telemetry` — per-gate occupancy heatmap with comfortable/busy/critical thresholds computed deterministically; AI briefing recommends crowd redirections. |
+| **Accessibility** | ♿ WCAG AA Compliant Interface | Dark/light theme toggle, keyboard navigation, skip links, `aria-live` route announcements, semantic HTML landmarks, and screen-reader-friendly components throughout. |
+| **Transportation** | 🚌 Transit & Parking Guidance | `FanPortal.jsx` & `/api/chat` — Matchday Copilot answers transit questions (NJ Transit rail, bus shuttles, rideshare zones, parking lots) grounded on MetLife Stadium transport data. |
+| **Sustainability** | 🌿 EcoGoal Matchday Tracker | `FanPortal.jsx` & `/api/sustainability` — fans log ecological actions (public transit, cup recycling, water refills) to earn points and compute carbon offsets. |
+| **Multilingual Assistance** | 💬 Matchday Copilot | `FanPortal.jsx` & `/api/chat` — conversational chatbot assists fans with schedules, transit, and bag policies in any major language via Gemini multi-turn chat. |
+| **Operational Intelligence** | 🚨 AI Incident Intake Console | `StaffPortal.jsx` & `/api/log-incident-raw` — volunteers voice-log incidents in any language; Gemini translates, categorizes severity, and generates resolution checklists. |
+| **Real-time Decision Support** | 🤖 Strategic Command Cockpit | `AdminPortal.jsx` & `/api/decision` — tournament directors generate tactical mitigation plans, staff dispatch orders, and multilingual loudspeaker announcements from live data. |
 
 ## 🧠 Approach and Logic
 

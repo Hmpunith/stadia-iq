@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Application header with role-based navigation switcher
+ * and dark/light theme toggle for WCAG AA accessibility compliance.
+ *
+ * @module Header
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 
