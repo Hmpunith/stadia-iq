@@ -206,7 +206,11 @@ Ensure safety and suggest alternative paths if congestion exceeds 60%.`;
     res.status(HTTP.OK).json(routeData);
   } catch (err) {
     reportError(err, { route: '/api/wayfind', requestId: req.requestId });
-    next(err);
+    if (err.isOperational) {
+      next(err);
+    } else {
+      next(new AIServiceError(err.message));
+    }
   }
 });
 
@@ -257,7 +261,11 @@ router.post('/chat', async (req, res, next) => {
     res.status(HTTP.OK).json({ response: responseText });
   } catch (err) {
     reportError(err, { route: '/api/chat', requestId: req.requestId });
-    next(err);
+    if (err.isOperational) {
+      next(err);
+    } else {
+      next(new AIServiceError(err.message));
+    }
   }
 });
 
@@ -354,7 +362,11 @@ Location reported: "${location}"`;
     res.status(HTTP.CREATED).json(logged);
   } catch (err) {
     reportError(err, { route: '/api/log-incident-raw', requestId: req.requestId });
-    next(err);
+    if (err.isOperational) {
+      next(err);
+    } else {
+      next(new AIServiceError(err.message));
+    }
   }
 });
 
@@ -455,7 +467,11 @@ Generate an operational decision and response protocol for these stadium events.
     res.status(HTTP.OK).json(decisionResponse);
   } catch (err) {
     reportError(err, { route: '/api/decision', requestId: req.requestId });
-    next(err);
+    if (err.isOperational) {
+      next(err);
+    } else {
+      next(new AIServiceError(err.message));
+    }
   }
 });
 
